@@ -1,11 +1,6 @@
 ---
 title: API Reference
 
-language_tabs:
-  - shell
-  - ruby
-  - python
-
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
   - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
@@ -13,77 +8,81 @@ toc_footers:
 includes:
   - errors
 
-search: true
+search: false
 ---
 
-# Introduction
+# Kantan Shiharai Development Guide
+## Kantan Shiharai Web API
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+### Credit Card
+クレジットカード決済 APIの説明
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+### Web CVS
+Webコンビニ決済 APIの説明
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+### Webhook
+Webhookの説明
 
-# Authentication
+# Web CVS
+## Checkout Request
 
-> To authorize, use this code:
+# Webhook
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+## Checkout Response
 ```
-
-```python
-import 'kittn'
-
-api = Kittn.authorize('meowmeowmeow')
+決済要求の結果通知は、マーチャント様からご申請頂いたURLにPOSTリクエストを送信することで行われます。
 ```
+> 決済要求が**成功**した場合には、XML形式のペイロードがPOSTリクエストによって送信されます。
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+```xml
+
+<?xml version="1.0" encoding="UTF-8"?>                                      
+<request>                                     
+  <xml_info>                                      
+    <version>1.0<version>                                     
+    <operation_type>01</operation_type>                                     
+  </xml_info>                                     
+  <order_id>1312040000000001</order_id>                                     
+  <order_time>2013-12-04T11:46:50+09:00</order_time>                                      
+  <is_trial_order>false</is_trial_order>                                      
+  <merch_id>MERCHID1</merch_id>                                     
+  <merch_mgt_id>MERCHMGTID0000000001</merch_mgt_id>                                     
+  <charge_status>OK</charge_status>                                     
+  <buyer_billing_address>                                     
+    <lastname>リクルート</lastname>                                      
+    <firstname>太郎</firstname>                                     
+    <lastname_kana>リクルート</lastname_kana>                                      
+    <firstname_kana>タロウ</firstname_kana>                                      
+    <email>email@recruit.co.jp</email>                                      
+  </buyer_billing_address>                                      
+  <items>                                     
+    <item>                                      
+      <item_name>商品A</item_name>                                      
+      <item_qty>1</item_qty>                                      
+      <item_unit_price>525</item_unit_price>                                      
+      <item_include_tax>25</item_include_tax>                                     
+      <item_point_num>15</item_point_num>                                     
+    </item>                                     
+    <item>                                      
+      <item_name>商品B</item_name>                                      
+      <item_qty>1</item_qty>                                      
+      <item_unit_price>315</item_unit_price>                                      
+      <item_include_tax>15</item_include_tax>                                     
+      <item_point_num>9</item_point_num>                                      
+    </item>                                     
+  </items>                                      
+  <ship_fee>0</ship_fee>                                      
+  <price>                                     
+    <subtotal_price>840</subtotal_price>                                      
+    <total_price>840</total_price>                                      
+  </price>                                      
+  <device>2</device>                                      
+  <timestamp>2013-12-04T11:46:50+09:00</timestamp>                                      
+</request>                                      
 ```
+> 決済要求に**失敗**した場合には、XML形式のペイロードがPOSTリクエストによって送信されます。
 
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace `meowmeowmeow` with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import 'kittn'
-
-api = Kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
+```xml
 [
   {
     "id": 1,
@@ -101,19 +100,26 @@ curl "http://example.com/api/kittens"
   }
 ]
 ```
+指定URLへのPOSTリクエストにより、Webコンビニの決済要求の結果を通知します。
 
-This endpoint retrieves all kittens.
 
-### HTTP Request
+### Content-Type
 
-`GET http://example.com/kittens`
+`application/xml`
 
-### Query Parameters
+### USER-AGENT
+`KantanShiharai`
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+### XMLスキーマ　
+
+SEQ | タグエレメント名 | 項目名 | 型 | 桁数 | 必須 | タイプ | 設定内容 | 備考
+ -------------- | -------------- | -------------- | -------------- | -------------- | -------------- |  -------------- | -------------- | --------------
+1|XML情報|xml_info|  |  |  |  |  | 
+1-1|バージョン|version|半角文字|10|○|可変|XMLのバージョン情報|ｓｓｓｓ
+1-2|通知種別|operation_type|半角文字|2|○|可変|01:WebCVS決済要求結果| 
+2|注文番号|order_id|半角文字|16|○|固定|決済データを一意に管理するID|リクルート払い出しID ※購入時に払い出し決済データ特定するID
+3|注文時刻|operation_type|半角文字|2|○|可変|01:WebCVS決済要求結果| 
+3|注文時刻|operation_type|半角文字|2|○|可変|01:WebCVS決済要求結果| 
 
 <aside class="success">
 Remember — a happy kitten is an authenticated kitten!
