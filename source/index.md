@@ -13,15 +13,29 @@ search: false
 API概要
 
 # Request Checkout
-```
-決済要求の結果通知は、マーチャント様からご申請頂いたURLにPOSTリクエストを送信することで行われます。
+>決済要求は、エンドポイントURLに対してapplication/x-www-form-urlencoded形式のデータをPOST送信することで行います。
+
+```http
+POST /demo/submit/ HTTP/1.1
+Host: rouge.jayferd.us
+Cache-Control: max-age=0
+Origin: http://rouge.jayferd.us
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2)
+    AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7
+Content-Type: application/json
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Referer: http://pygments.org/
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8
+Accept-Charset: windows-949,utf-8;q=0.7,*;q=0
+merch_id=M0000002&merch_mgt_id=TEST001&order_done_url=http%3A%2F%2Forder.done.url&error_done_url=http%3A%2F%2Ferror.done.url&customer_id=CAP980000023&item_id=G13123100006&item_price=200&merch_id=M0000002&merch_mgt_id=TEST001&order_done_url=http%3A%2F%2Forder.done.url&error_done_url=http%3A%2F%2Ferror.done.url&customer_id=CAP980000023&item_id=G13123100006&item_price=200
 ```
 
 # Webhook
 
 ## Checkout Request Succeeded or Failed
 ```
-決済要求の結果通知は、マーチャント様からご申請頂いたURLにPOSTリクエストを送信することで行われます。
+Webコンビニを使った決済要求の結果通知は、マーチャント様からご申請頂いたURLにPOSTリクエストを送信することで行われます。
 ```
 > 決済要求が**成功**した場合には、XML形式のペイロードがPOSTリクエストによって送信されます。
 
