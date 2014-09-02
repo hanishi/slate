@@ -31,6 +31,26 @@ Accept-Charset: windows-949,utf-8;q=0.7,*;q=0
 merch_id=M0000002&merch_mgt_id=TEST001&order_done_url=http%3A%2F%2Forder.done.url&error_done_url=http%3A%2F%2Ferror.done.url&customer_id=CAP980000023&item_id=G13123100006&item_price=200&merch_id=M0000002&merch_mgt_id=TEST001&order_done_url=http%3A%2F%2Forder.done.url&error_done_url=http%3A%2F%2Ferror.done.url&customer_id=CAP980000023&item_id=G13123100006&item_price=200
 ```
 
+# Create Invoice
+
+```http
+POST /demo/submit/ HTTP/1.1
+Host: rouge.jayferd.us
+Cache-Control: max-age=0
+Origin: http://rouge.jayferd.us
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2)
+    AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.63 Safari/535.7
+Content-Type: application/json
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Referer: http://pygments.org/
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: en-US,en;q=0.8
+Accept-Charset: windows-949,utf-8;q=0.7,*;q=0
+merch_id=M0000002&merch_mgt_id=TEST001&order_done_url=http%3A%2F%2Forder.done.url&error_done_url=http%3A%2F%2Ferror.done.url&customer_id=CAP980000023&item_id=G13123100006&item_price=200&merch_id=M0000002&merch_mgt_id=TEST001&order_done_url=http%3A%2F%2Forder.done.url&error_done_url=http%3A%2F%2Ferror.done.url&customer_id=CAP980000023&item_id=G13123100006&item_price=200
+```
+
+# Invalidate Checkout
+
 # Webhook
 
 ## Checkout Request Succeeded or Failed
@@ -200,81 +220,93 @@ total_price|合計（税込）|半角数字|最大13桁
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<new_invoice_notification>
-  <account>                                     
-    <lastname>リクルート</lastname>                                      
-    <firstname>太郎</firstname>                                     
-    <lastname_kana>リクルート</lastname_kana>                                      
-    <firstname_kana>タロウ</firstname_kana>                                      
-    <email>email@recruit.co.jp</email>                                      
-  </account>
-  <invoice>
+<request>
+  <xml_info>                                      
+    <version>1.0<version>                                     
+    <operation_type>10</operation_type>                                     
+  </xml_info>
+  <new_invoice_notification> 
     <uuid>ffc64d71d4b5404e93f13aac9c63b007</uuid>
-    <invoice_number type="integer">13120400000001</invoice_number>
-    <state>open</state>
-    <total type="integer">1000</total>
+    <merch_mgt_id>MERCHMGTID0000000001</merch_mgt_id>
+    <buyer_billing_address>                                     
+      <lastname>リクルート</lastname>                                      
+      <firstname>太郎</firstname>                                     
+      <lastname_kana>リクルート</lastname_kana>                                      
+      <firstname_kana>タロウ</firstname_kana>                                      
+      <email>email@recruit.co.jp</email>                                      
+    </buyer_billing_address>
+    <invoice> 
+      <order_id type="string">1312040000000001</order_id>
+      <state>open</state>
+      <total>840</total>
+      <closed_at type="datetime" nil="true"></closed_at>
+      <store_chain_code type="integer">1</store_chain_code>
+    </invoice>
     <date type="datetime">2014-10-1T11:46:50+09:00</date>
-    <closed_at type="datetime" nil="true"></closed_at>
-    <store_chain_code type="integer">1</store_chain_code>
-    <auxiliary type="string">
-      20141015T1146
-    </auxiliary>
-  </invoice>
-</new_invoice_notification>
+  </new_invoice_notification>
+</request>
 ```
 
 ## Closed Invoice Notification
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<closed_invoice_notification>
-   <account>                                     
-    <lastname>リクルート</lastname>                                      
-    <firstname>太郎</firstname>                                     
-    <lastname_kana>リクルート</lastname_kana>                                      
-    <firstname_kana>タロウ</firstname_kana>                                      
-    <email>email@recruit.co.jp</email>                                      
-  </account>
-  <invoice>
+<request>
+  <xml_info>                                      
+    <version>1.0<version>                                     
+    <operation_type>10</operation_type>                                     
+  </xml_info>
+  <closed_invoice_notification>
     <uuid>ffc64d71d4b5404e93f13aac9c63b007</uuid>
-    <invoice_number type="integer">13120400000001</invoice_number>
-    <state>collected</state>
-    <total type="integer">1000</total>
+    <merch_mgt_id>MERCHMGTID0000000001</merch_mgt_id>
+    <buyer_billing_address>                                     
+      <lastname>リクルート</lastname>                                      
+      <firstname>太郎</firstname>                                     
+      <lastname_kana>リクルート</lastname_kana>                                      
+      <firstname_kana>タロウ</firstname_kana>                                      
+      <email>email@recruit.co.jp</email>                                      
+    </buyer_billing_address>
+    <invoice> 
+      <order_id type="string">1312040000000001</order_id>
+      <state>collected</state>
+      <total>840</total>
+      <closed_at type="datetime">2014-10-2T11:46:50+09:00</closed_at>
+      <store_chain_code type="integer">1</store_chain_code>
+    </invoice>
     <date type="datetime">2014-10-1T11:46:50+09:00</date>
-    <closed_at type="datetime">2014-10-2T11:46:50+09:00</closed_at>
-    <store_chain_code type="integer">1</store_chain_code>
-    <auxiliary type="string">
-      20141015T1146
-    </auxiliary>
-  </invoice>
-</closed_invoice_notification>
+  </closed_invoice_notification>
+</request>
 ```
 
 ## Overdue Invoice Notification
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<overdue_invoice_notification>
-  <account>                                     
-    <lastname>リクルート</lastname>                                      
-    <firstname>太郎</firstname>                                     
-    <lastname_kana>リクルート</lastname_kana>                                      
-    <firstname_kana>タロウ</firstname_kana>                                      
-    <email>email@recruit.co.jp</email>                                      
-  </account>
-  <invoice>
+<request>
+  <xml_info>                                      
+    <version>1.0<version>                                     
+    <operation_type>10</operation_type>                                     
+  </xml_info>
+  <overdue_invoice_notification>
     <uuid>ffc64d71d4b5404e93f13aac9c63b007</uuid>
-    <invoice_number type="integer">13120400000001</invoice_number>
-    <state>overdue</state>
-    <total type="integer">1000</total>
+    <merch_mgt_id>MERCHMGTID0000000001</merch_mgt_id>
+    <buyer_billing_address>                                     
+      <lastname>リクルート</lastname>                                      
+      <firstname>太郎</firstname>                                     
+      <lastname_kana>リクルート</lastname_kana>                                      
+      <firstname_kana>タロウ</firstname_kana>                                      
+      <email>email@recruit.co.jp</email>                                      
+    </buyer_billing_address>
+    <invoice> 
+      <order_id type="string">1312040000000001</order_id>
+      <state>overdue</state>
+      <total>840</total>
+      <closed_at type="datetime">2014-10-2T11:46:50+09:00</closed_at>
+      <store_chain_code type="integer">1</store_chain_code>
+    </invoice>
     <date type="datetime">2014-10-1T11:46:50+09:00</date>
-    <closed_at type="datetime">2014-10-15T11:46:50+09:00</closed_at>
-    <store_chain_code type="integer">1</store_chain_code>
-    <auxiliary type="string">
-      20141015T1146
-    </auxiliary>
-  </invoice>
-</overdue_invoice_notification>
+  </overdue_invoice_notification>
+</request>
 ```
 
 
